@@ -19,7 +19,7 @@ public class Canal implements ObserveurDeCapteurAsync {
 
     @Override
     public Future<Integer> getValue(Capteur capteur) {
-        GetValue getValue = new GetValue(capteur);
+        GetValue getValue = new GetValue(capteur, this);
         return scheduler.submit(getValue);
     }
 
