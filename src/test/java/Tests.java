@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,9 +30,15 @@ public class Tests {
     private ObserveurDeCapteurAsync canal1, canal2, canal3;
     private ObserveurDeCapteur afficheur1, afficheur2, afficheur3;
     private ScheduledExecutorService scheduler;
+    private List<Integer> valeursDuCapteur;
+
+    private Logger logger = Logger.getLogger("");
 
     @BeforeEach
     public void setUp() {
+        logger.setLevel(Level.INFO);
+        valeursDuCapteur = new ArrayList<>();
+
         capteur = new CapteurImpl(Strategy.DiffusionNoStrategy);
 
         canal1 = new Canal();
@@ -51,6 +59,7 @@ public class Tests {
         canal1.attach(afficheur1, scheduler);
         canal2.attach(afficheur2, scheduler);
         canal3.attach(afficheur3, scheduler);
+
     }
 
     @Test
@@ -59,14 +68,23 @@ public class Tests {
 
         for (int i = 0; i < 10; i++) {
             capteur.tick();
+            valeursDuCapteur.add(i + 1);
             Thread.sleep(500);
         }
 
         scheduler.awaitTermination(5L, TimeUnit.SECONDS);
 
+        logger.info("Résultat NoStrategy Afficheur1 : " + afficheur1.toString());
+        logger.info("Résultat NoStrategy Afficheur2 : " + afficheur2.toString());
+        logger.info("Résultat NoStrategy Afficheur3 : " + afficheur3.toString());
+
         List<Integer> historicAfficheur1 = afficheur1.getHistoric();
         List<Integer> historicAfficheur2 = afficheur2.getHistoric();
         List<Integer> historicAfficheur3 = afficheur3.getHistoric();
+
+        assertTrue(valeursDuCapteur.containsAll(historicAfficheur1));
+        assertTrue(valeursDuCapteur.containsAll(historicAfficheur2));
+        assertTrue(valeursDuCapteur.containsAll(historicAfficheur3));
 
         assertFalse(historicAfficheur1.isEmpty());
         assertFalse(historicAfficheur2.isEmpty());
@@ -76,22 +94,30 @@ public class Tests {
     @Test
     public void TestDiffusionAtomique() throws InterruptedException {
         capteur.setStrategy(Strategy.DiffusionAtomique);
-        List<Integer> expectedResults = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
             capteur.tick();
-            expectedResults.add(i + 1);
+            valeursDuCapteur.add(i + 1);
             Thread.sleep(500);
         }
 
         scheduler.awaitTermination(10L, TimeUnit.SECONDS);
 
+        logger.info("Résultat DiffusionAtomique Afficheur1 : " + afficheur1.toString());
+        logger.info("Résultat DiffusionAtomique Afficheur2 : " + afficheur2.toString());
+        logger.info("Résultat DiffusionAtomique Afficheur3 : " + afficheur3.toString());
+
         List<Integer> historicAfficheur1 = afficheur1.getHistoric();
         List<Integer> historicAfficheur2 = afficheur2.getHistoric();
         List<Integer> historicAfficheur3 = afficheur3.getHistoric();
-        assertIterableEquals(expectedResults, historicAfficheur1);
-        assertIterableEquals(expectedResults, historicAfficheur2);
-        assertIterableEquals(expectedResults, historicAfficheur3);
+
+        assertTrue(valeursDuCapteur.containsAll(historicAfficheur1));
+        assertTrue(valeursDuCapteur.containsAll(historicAfficheur2));
+        assertTrue(valeursDuCapteur.containsAll(historicAfficheur3));
+
+        assertIterableEquals(valeursDuCapteur, historicAfficheur1);
+        assertIterableEquals(valeursDuCapteur, historicAfficheur2);
+        assertIterableEquals(valeursDuCapteur, historicAfficheur3);
     }
 
     @Test
@@ -100,14 +126,24 @@ public class Tests {
 
         for (int i = 0; i < 10; i++) {
             capteur.tick();
+            valeursDuCapteur.add(i + 1);
             Thread.sleep(500);
         }
 
         scheduler.awaitTermination(10L, TimeUnit.SECONDS);
 
+        logger.info("Résultat DiffusionSequentielle Afficheur1 : " + afficheur1.toString());
+        logger.info("Résultat DiffusionSequentielle Afficheur2 : " + afficheur2.toString());
+        logger.info("Résultat DiffusionSequentielle Afficheur3 : " + afficheur3.toString());
+
         List<Integer> historicAfficheur1 = afficheur1.getHistoric();
         List<Integer> historicAfficheur2 = afficheur2.getHistoric();
         List<Integer> historicAfficheur3 = afficheur3.getHistoric();
+
+        assertTrue(valeursDuCapteur.containsAll(historicAfficheur1));
+        assertTrue(valeursDuCapteur.containsAll(historicAfficheur2));
+        assertTrue(valeursDuCapteur.containsAll(historicAfficheur3));
+
         assertIterableEquals(historicAfficheur1, historicAfficheur2);
         assertIterableEquals(historicAfficheur1, historicAfficheur3);
 
@@ -121,14 +157,23 @@ public class Tests {
 
         for (int i = 0; i < 10; i++) {
             capteur.tick();
+            valeursDuCapteur.add(i + 1);
             Thread.sleep(500);
         }
 
         scheduler.awaitTermination(10L, TimeUnit.SECONDS);
 
+        logger.info("Résultat DiffusionEpoque Afficheur1 : " + afficheur1.toString());
+        logger.info("Résultat DiffusionEpoque Afficheur2 : " + afficheur2.toString());
+        logger.info("Résultat DiffusionEpoque Afficheur3 : " + afficheur3.toString());
+
         List<Integer> historicAfficheur1 = afficheur1.getHistoric();
         List<Integer> historicAfficheur2 = afficheur2.getHistoric();
         List<Integer> historicAfficheur3 = afficheur3.getHistoric();
+
+        assertTrue(valeursDuCapteur.containsAll(historicAfficheur1));
+        assertTrue(valeursDuCapteur.containsAll(historicAfficheur2));
+        assertTrue(valeursDuCapteur.containsAll(historicAfficheur3));
 
         for (int i = 1; i < historicAfficheur1.size(); i++) {
             assertTrue(historicAfficheur1.get(i) > historicAfficheur1.get(i - 1));
@@ -142,11 +187,8 @@ public class Tests {
             assertTrue(historicAfficheur1.get(i) > historicAfficheur1.get(i - 1));
         }
 
-        Set<Integer> noDuplicates1 = new HashSet<>(historicAfficheur1);
-        Set<Integer> noDuplicates2 = new HashSet<>(historicAfficheur2);
-        Set<Integer> noDuplicates3 = new HashSet<>(historicAfficheur3);
-        assertTrue(historicAfficheur1.size() == noDuplicates1.size());
-        assertTrue(historicAfficheur2.size() == noDuplicates2.size());
-        assertTrue(historicAfficheur3.size() == noDuplicates3.size());
+        assertTrue(historicAfficheur1.size() == (new HashSet<>(historicAfficheur1)).size());
+        assertTrue(historicAfficheur2.size() == (new HashSet<>(historicAfficheur2)).size());
+        assertTrue(historicAfficheur3.size() == (new HashSet<>(historicAfficheur3)).size());
     }
 }
