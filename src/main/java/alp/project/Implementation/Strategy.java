@@ -1,7 +1,7 @@
 package alp.project.Implementation;
 
 public enum Strategy {
-    NoStrategy,
+    DiffusionNoStrategy,
     DiffusionAtomique,
     DiffusionSequentielle,
     DiffusionEpoque

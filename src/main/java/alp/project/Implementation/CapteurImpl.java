@@ -2,6 +2,7 @@ package alp.project.Implementation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import alp.project.Interface.AlgoDiffusion;
 import alp.project.Interface.Capteur;
@@ -25,17 +26,20 @@ public class CapteurImpl implements Capteur {
         observeursDeCapteurAsync.add(observeurDeCapteurAsync);
     }
 
+    @Override
     public void setStrategy(Strategy strategy) {
         switch (strategy) {
             case DiffusionAtomique:
                 this.algoDiffusion = new DiffusionAtomique(this);
                 break;
             case DiffusionEpoque:
+                this.algoDiffusion = new DiffusionEpoque(this);
                 break;
             case DiffusionSequentielle:
+                this.algoDiffusion = new DiffusionSequentielle(this);
                 break;
             default:
-                this.algoDiffusion = new DiffusionAtomique(this);
+                this.algoDiffusion = new DiffusionNoStrategy(this);
                 break;
         }
     }
@@ -45,26 +49,29 @@ public class CapteurImpl implements Capteur {
         return observeursDeCapteurAsync;
     }
 
+    @Override
     public void lock() {
         lock = true;
     }
 
+    @Override
     public void unlock() {
         lock = false;
     }
 
+    @Override
     public boolean isLocked() {
         return lock;
     }
 
     @Override
     public void tick() {
-        value += 1;
-        algoDiffusion.nouvelleValeur(value);
+        value ++;
+        algoDiffusion.execute(value);
     }
 
     @Override
-    public int getValue(ObserveurDeCapteurAsync observeurDeCapteurAsync) {
+    public Optional<Integer> getValue(ObserveurDeCapteurAsync observeurDeCapteurAsync) {
         return algoDiffusion.getValue(observeurDeCapteurAsync);
     }
 }

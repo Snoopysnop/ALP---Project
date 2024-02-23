@@ -2,6 +2,7 @@ package alp.project.Implementation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -23,15 +24,18 @@ public class Afficheur implements ObserveurDeCapteur {
     @Override
     public void update(Capteur capteur) {
         try {
-            field = canal.getValue(capteur).get(100L,TimeUnit.MILLISECONDS);
-            historic.add(field);
+            Optional<Integer> result = canal.getValue(capteur).get(100L,TimeUnit.MILLISECONDS);
+            if(result.isPresent()) {
+                field = result.get();
+                historic.add(field);
+            }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 
-    public List<Integer> getValues() {
+    @Override
+    public List<Integer> getHistoric() {
         return historic;
     }
 
