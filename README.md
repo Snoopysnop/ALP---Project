@@ -9,6 +9,10 @@ Nous avons débuté ce projet par une phase de conception. Pour cela, nous avons
 
 ![Diagramme UML](./resource/DiagrammeUML.png)
 
+Ainsi qu'un diagramme de séquence, ce dernier représente le déroulement du service de diffusion selon la stratégie atomique.
+
+![Diagramme de Séquence](./resource/DiagrammeSequence.png)
+
 ## Politiques de diffusion
 En tout, trois types de diffusion sont implémentées :
 - **Stratégie atomique :** les afficheurs doivent recevoir toutes les valeurs du capteur (sans doublon).
